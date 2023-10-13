@@ -25,6 +25,15 @@ interface Entry {
 	color: string 
 	content: string
 }
+
+interface Entry {
+    date: string;
+    intensity?: number;
+    checkbox: boolean;
+    color: string;
+    content: string;
+}
+
 const DEFAULT_SETTINGS: CalendarData = {
 	year: new Date().getFullYear(),
 	colors: {
@@ -109,7 +118,7 @@ export default class HeatmapCalendar extends Plugin {
 			const mappedEntries: Entry[] = []
 			calEntries.forEach(e => {
 				const newEntry = {
-					intensity: defaultEntryIntensity,
+					intensity: defaultEntryIntensibox.ty,
 					...e,
 				}
 				const colorIntensities = typeof colors === "string"
@@ -158,10 +167,18 @@ export default class HeatmapCalendar extends Plugin {
 
 					box.date = entry.date
 
-					if (entry.content) box.content = entry.content
-
+					if (entry.content) {
+        				if (entry.intensity !== undefined) {
+            				box.content = `Value: ${entry.intensity}, Checkbox: <input type="checkbox" ${entry.checkbox ? 'checked' : ''}>`;
+       					 } else {
+           					box.content = `<input type="checkbox" ${entry.checkbox ? 'checked' : ''}> ${entry.content}`;
+       					 }
+					}
+					
 					const currentDayColors = entry.color ? colors[entry.color] : colors[Object.keys(colors)[0]]
 					box.backgroundColor = currentDayColors[entry.intensity as number - 1]
+
+					
 
 				} else box.classNames?.push("isEmpty")
 				boxes.push(box)
